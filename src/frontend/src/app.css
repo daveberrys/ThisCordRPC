@@ -1,0 +1,51 @@
+:root {
+    /* discord style cause I wanted to make it like dat :3 */
+    --background: #35373D;
+    --sidebar: #313338;
+    --text: #FFF;
+    --extraText: #9799A1;
+    --link: #74ABEF;
+    
+    --selected: #414349;
+    --unselected: #A8ABB3; /* also used for catagory! */
+    --unselectedHover: #35373C; /* when hovered, the icon and text becomes white */
+    
+    --booleanEnabled: #5865F2;
+    --booleanDisabled: #2F3036;
+    --booleanCircle: #FFF;
+    
+    --faintGradientButton: #6E7BEF;
+    --scrollbar: #797D89;
+
+    --valueBorder: #43454B; /* this goes for input, dropdown and boolean */
+    --input: #383A40;
+    
+    --delete: #D22D39;
+    --deleteBorder: #D63D49;
+    
+    --radius: 10px;
+    --gap: 5px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--text);
+    font-family: sans-serif;
+    overflow: hidden;
+}
+
+a {
+    color: var(--link);
+    text-decoration: none;
+}
+
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    
+    outline: none;
+    box-shadow: none;
+}

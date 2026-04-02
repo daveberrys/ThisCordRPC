@@ -1,0 +1,16 @@
+# python
+__pycache__
+*.pyc
+build
+dist
+*venv*
+
+# npm
+node_modules
+dist
+
+*-lock.yaml
+*-lock.json
+
+# misc
+.env
