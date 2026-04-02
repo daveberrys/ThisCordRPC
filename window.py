@@ -45,7 +45,7 @@ def startWindow(dev=False):
 
     wv.start(
         http_server=True,
-        private_mode=False,
+        private_mode=True,
         debug=not getattr(sys, "frozen", False),
         icon=iconPath,
     )
