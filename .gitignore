@@ -9,8 +9,5 @@ dist
 node_modules
 dist
 
-*-lock.yaml
-*-lock.json
-
 # misc
 .env
