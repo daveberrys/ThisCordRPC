@@ -3,7 +3,7 @@ _pyder_project = [
         "projectName": "ThisCordRPC",
         "domainSystem": "dev.pages.codedave",
         "projectID": "thiscordrpc",
-        "version": "Beta 0.0.1",
+        "version": "Beta 0.0.2",
         "window": {
             "minSize": [1280, 720],
             "maxSize": [1280, 720],
