@@ -12,10 +12,19 @@ if sys.platform == "win32":
 
 class API:
     def __init__(self):
-        self.window = wv.active_window()
         self.appID = f"{pyder_domainSystem}.{pyder_projectID}"
         self.handler = drpc.DiscordRPC()
         self.json = json_handler.JSON(self)
+
+    def getWindow(self):
+        activeWindow = wv.active_window()
+
+        if activeWindow:
+            return activeWindow
+        elif len(wv.windows) > 0:
+            return wv.windows[0]
+        else:
+            return None
 
     def getConfigPath(self):
         if sys.platform == "win32":
@@ -63,3 +72,23 @@ class API:
         return self.json.editPreset(oldTitle, title, details, state, largeImage, smallImage, largeImageText, smallImageText)
     def deletePreset(self, title):
         return self.json.deletePreset(title)
+    
+    # system stuff
+    def exitApp(self):
+        currentWindow = self.getWindow()
+
+        if currentWindow == None:
+            print("Window was null. App could not exit.")
+            return None
+        else:
+            currentWindow.destroy()
+            return True
+    def minimizeApp(self):
+        currentWindow = self.getWindow()
+
+        if currentWindow == None:
+            print("Window was null. App could not minimize.")
+            return None
+        else:
+            currentWindow.minimize()
+            return True

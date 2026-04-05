@@ -2,6 +2,7 @@
   import Sidebar from './components/sidebar.svelte';
   import Home from './pages/home.svelte';
   import Settings from './pages/settings.svelte';
+  import Topbar from './components/topbar.svelte';
   
   let currentPage = 'home';
 </script>
@@ -12,11 +13,14 @@
     </div>
     
     <div class="right">
-        {#if currentPage === "home"}
-            <Home />
-        {:else if currentPage === "settings"}
-            <Settings />
-        {/if}
+        <Topbar/>
+        <div class="content">
+            {#if currentPage === "home"}
+                <Home />
+            {:else if currentPage === "settings"}
+                <Settings />
+            {/if}
+        </div>
     </div>
 </main>
 
@@ -31,8 +35,10 @@
         min-height: 100vh;
         max-height: 100vh;
         
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
+        .content {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
     }
 </style>
