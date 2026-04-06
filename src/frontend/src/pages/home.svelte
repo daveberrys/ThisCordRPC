@@ -283,7 +283,7 @@
         padding-right: 0.5rem;
         padding-bottom: 2.75rem;
 
-        max-height: 50rem;
+        max-height: 60vh;
         scrollbar-width: thin;
         scrollbar-color: var(--scrollbar) var(--background);
         overflow-y: scroll;
