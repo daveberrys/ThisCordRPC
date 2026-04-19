@@ -1,13 +1,32 @@
 <script lang="ts">
+    import { onMount } from "svelte";
     export let currentPage: string;
 
-    import discordSvg from "/public/icon/discord.svg?raw";
-    import settingsSvg from "/public/icon/settings.svg?raw";
-    import { onMount } from "svelte";
+    import gameSVG from "/public/icon/game.svg?raw";
+    import profileSVG from "/public/icon/profile.svg?raw";
+    import settingsSVG from "/public/icon/settings.svg?raw";
 
     let version = "";
     let os = "";
 
+    const sidebarPages = [
+      {
+        "name": "Presence",
+        "icon": gameSVG,
+        "page": "presence",
+      },
+      {
+        "name": "Profile",
+        "icon": profileSVG,
+        "page": "profile",
+      },
+      {
+        "name": "Settings",
+        "icon": settingsSVG,
+        "page": "settings",
+      },
+    ];
+    
     const getPyAPI = () =>
         new Promise<any>((resolve) => {
             if (window.pywebview?.api) {
@@ -38,29 +57,19 @@
 
 <section class="sidebar">
     <section class="content">
-        <button
-            type="button"
-            class:selected={currentPage === "home"}
-            class="item"
-            on:click={() => selectPage("home")}
-        >
-            <div class="content">
-                {@html discordSvg}
-                <span>Home</span>
-            </div>
-        </button>
-
-        <button
-            type="button"
-            class:selected={currentPage === "settings"}
-            class="item"
-            on:click={() => selectPage("settings")}
-        >
-            <div class="content">
-                {@html settingsSvg}
-                <span>Settings</span>
-            </div>
-        </button>
+        {#each sidebarPages as page}
+            <button
+                type="button"
+                class:selected={currentPage === page.page}
+                class="item"
+                on:click={() => selectPage(page.page)}
+            >
+                <div class="content">
+                    {@html page.icon}
+                    <span>{page.name}</span>
+                </div>
+            </button>
+        {/each}
     </section>
 
     <section class="footer">

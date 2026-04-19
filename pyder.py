@@ -1,8 +1,8 @@
 _pyder_project = [
     {
-        "projectName": "ThisCordRPC",
+        "projectName": "MultipurposeCord",
         "domainSystem": "dev.pages.codedave",
-        "projectID": "thiscordrpc",
+        "projectID": "multipurposecord",
         "version": "Beta 0.0.2",
         "window": {
             "minSize": [1280, 720],

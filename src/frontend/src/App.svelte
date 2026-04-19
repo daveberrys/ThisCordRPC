@@ -1,10 +1,12 @@
 <script lang="ts">
   import Sidebar from './components/sidebar.svelte';
-  import Home from './pages/home.svelte';
-  import Settings from './pages/settings.svelte';
   import Topbar from './components/topbar.svelte';
-  
-  let currentPage = 'home';
+
+  import Presence from './pages/presence.svelte';
+  import Settings from './pages/settings.svelte';
+  import Profile from './pages/profile.svelte';
+
+  let currentPage = 'presence';
 </script>
 
 <main class="flex">
@@ -15,10 +17,12 @@
     <div class="right">
         <Topbar/>
         <div class="content">
-            {#if currentPage === "home"}
-                <Home />
+            {#if currentPage === "presence"}
+                <Presence />
             {:else if currentPage === "settings"}
                 <Settings />
+            {:else if currentPage === "profile"}
+                <Profile />
             {/if}
         </div>
     </div>

@@ -17,11 +17,11 @@ distDir = os.path.join(resourceRoot, "src", "frontend", "dist")
 
 iconPath = ""
 if sys.platform == "win32":
-    iconPath = os.path.join(resourceRoot, "icon", "512.ico")
+    iconPath = os.path.join(resourceRoot, "icon", "favicon.ico")
 elif sys.platform == "darwin":
-    iconPath = os.path.join(resourceRoot, "icon", "512.icns")
+    iconPath = os.path.join(resourceRoot, "icon", "favicon.icns")
 else:
-    iconPath = os.path.join(resourceRoot, "icon", "512.png")
+    iconPath = os.path.join(resourceRoot, "icon", "favicon.png")
 
 def startWindow(dev=False):
     if dev:

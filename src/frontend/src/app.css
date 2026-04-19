@@ -27,12 +27,16 @@
     --gap: 5px;
 }
 
-body {
+@font-face {
+    font-family: gg-sans;
+    src: url('gg sans Regular.ttf');
+}
+
+body, html {
     margin: 0;
     padding: 0;
     background-color: var(--background);
     color: var(--text);
-    font-family: sans-serif;
     overflow: hidden;
 }
 
@@ -48,4 +52,5 @@ a {
     
     outline: none;
     box-shadow: none;
+    font-family: gg-sans;
 }

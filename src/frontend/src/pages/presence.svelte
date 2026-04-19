@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    import DiscordRPC from "../components/home/displayRPC.svelte";
-    import DeletePreset from "../components/home/popup/deletePreset.svelte";
-    import EditPreset from "../components/home/popup/editPreset.svelte";
+    import DiscordRPC from "../components/presence/displayRPC.svelte";
+    import DeletePreset from "../components/presence/popup/deletePreset.svelte";
+    import EditPreset from "../components/presence/popup/editPreset.svelte";
 
     type Preset = {
         title: string;
@@ -25,10 +25,19 @@
     let smallImageText: string = "";
 
     let connectionError: string = "";
+    let presetError: string = "";
     let pyAPI: any = null;
     let presets: Preset[] = [];
     let selectedPresetForEdit: Preset | null = null;
     let selectedPresetForDelete: string | null = null;
+
+    function getErrorMessage(error: any) {
+        if (error && typeof error === "object" && "message" in error) {
+            return String((error as any).message);
+        }
+
+        return String(error);
+    }
 
     const getPyAPI = () =>
         new Promise<any>((resolve) => {
@@ -62,21 +71,45 @@
     }
 
     async function loadPresets() {
-        const presetData = await pyAPI?.loadPresets?.();
-        presets = Object.values((presetData?.presets ?? {}) as Record<string, Preset>);
+        presetError = "";
+
+        if (!pyAPI) {
+            presetError = "Backend API is not ready yet. Try restarting the app.";
+            presets = [];
+            return;
+        }
+
+        try {
+            const presetData = await pyAPI?.loadPresets?.();
+            presets = Object.values((presetData?.presets ?? {}) as Record<string, Preset>);
+        } catch (error) {
+            presetError = "Failed to load presets: " + getErrorMessage(error);
+            presets = [];
+        }
     }
 
     async function savePresence() {
-        await pyAPI?.savePreset?.(
-            title,
-            details,
-            state,
-            bigImage,
-            smallImage,
-            bigImageText,
-            smallImageText,
-        );
-        await loadPresets();
+        presetError = "";
+
+        if (!title.trim()) {
+            presetError = "Preset title is required.";
+            return;
+        }
+
+        try {
+            await pyAPI?.savePreset?.(
+                title,
+                details,
+                state,
+                bigImage,
+                smallImage,
+                bigImageText,
+                smallImageText,
+            );
+            await loadPresets();
+        } catch (error) {
+            presetError = "Failed to save preset: " + getErrorMessage(error);
+        }
     }
 
     function usePreset(preset: Preset) {
@@ -116,33 +149,50 @@
         smallImageText: string;
     }>) {
         const preset = event.detail;
-        await pyAPI?.editPreset?.(
-            preset.oldTitle,
-            preset.title,
-            preset.details,
-            preset.state,
-            preset.largeImage,
-            preset.smallImage,
-            preset.largeImageText,
-            preset.smallImageText,
-        );
-        closeEditPreset();
-        await loadPresets();
-        usePreset({
-            title: preset.title,
-            details: preset.details,
-            state: preset.state,
-            largeImage: preset.largeImage,
-            smallImage: preset.smallImage,
-            largeImageText: preset.largeImageText,
-            smallImageText: preset.smallImageText,
-        });
+        presetError = "";
+
+        if (!preset.title.trim()) {
+            presetError = "Preset title is required.";
+            return;
+        }
+
+        try {
+            await pyAPI?.editPreset?.(
+                preset.oldTitle,
+                preset.title,
+                preset.details,
+                preset.state,
+                preset.largeImage,
+                preset.smallImage,
+                preset.largeImageText,
+                preset.smallImageText,
+            );
+            closeEditPreset();
+            await loadPresets();
+            usePreset({
+                title: preset.title,
+                details: preset.details,
+                state: preset.state,
+                largeImage: preset.largeImage,
+                smallImage: preset.smallImage,
+                largeImageText: preset.largeImageText,
+                smallImageText: preset.smallImageText,
+            });
+        } catch (error) {
+            presetError = "Failed to update preset: " + getErrorMessage(error);
+        }
     }
 
     async function deletePreset(event: CustomEvent<{ title: string }>) {
-        await pyAPI?.deletePreset?.(event.detail.title);
-        closeDeletePreset();
-        await loadPresets();
+        presetError = "";
+
+        try {
+            await pyAPI?.deletePreset?.(event.detail.title);
+            closeDeletePreset();
+            await loadPresets();
+        } catch (error) {
+            presetError = "Failed to delete preset: " + getErrorMessage(error);
+        }
     }
 
     let isConnected: boolean = false;
@@ -184,6 +234,9 @@
             <button on:click={updatePresence} class="button">Update</button>
             {#if connectionError}
                 <span class="errorText">{connectionError}</span>
+            {/if}
+            {#if presetError}
+                <span class="errorText">{presetError}</span>
             {/if}
         </section>
     </div>
