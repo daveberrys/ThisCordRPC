@@ -1,62 +1,41 @@
-<script lang="ts">
-    import { onMount } from "svelte";
+<script>
+    import { onDestroy, onMount } from "svelte";
+    import { getDesktopAPI } from "../lib/getDesktopAPI.js";
+    import ConnectionDropdown from "../components/presence/connectionDropdown.svelte";
 
     import DiscordRPC from "../components/presence/displayRPC.svelte";
     import DeletePreset from "../components/presence/popup/deletePreset.svelte";
     import EditPreset from "../components/presence/popup/editPreset.svelte";
-
-    type Preset = {
-        title: string;
-        details: string;
-        state: string;
-        largeImage: string;
-        smallImage: string;
-        largeImageText: string;
-        smallImageText: string;
-    };
     
-    let title: string = "";
-    let state: string = "";
-    let details: string = "";
+    let title = "";
+    let state = "";
+    let details = "";
 
-    let bigImage: string = "";
-    let smallImage: string = "";
-    let bigImageText: string = "";
-    let smallImageText: string = "";
+    let bigImage = "";
+    let smallImage = "";
+    let bigImageText = "";
+    let smallImageText = "";
 
-    let connectionError: string = "";
-    let presetError: string = "";
-    let pyAPI: any = null;
-    let presets: Preset[] = [];
-    let selectedPresetForEdit: Preset | null = null;
-    let selectedPresetForDelete: string | null = null;
+    let connectionError = "";
+    let presetError = "";
+    let desktopAPI = null;
+    let presets = [];
+    let selectedPresetForEdit = null;
+    let selectedPresetForDelete = null;
+    let isConnected = false;
+    let connectionTimer = null;
 
-    function getErrorMessage(error: any) {
+    function getErrorMessage(error) {
         if (error && typeof error === "object" && "message" in error) {
-            return String((error as any).message);
+            return String(error.message);
         }
 
         return String(error);
     }
 
-    const getPyAPI = () =>
-        new Promise<any>((resolve) => {
-            if (window.pywebview?.api) {
-                resolve(window.pywebview.api);
-                return;
-            }
-
-            const handleReady = () => {
-                window.removeEventListener("pywebviewready", handleReady);
-                resolve(window.pywebview?.api);
-            };
-
-            window.addEventListener("pywebviewready", handleReady);
-        });
-
     async function updatePresence() {
         await clearPresence();
-        await pyAPI?.updateDiscordRPC?.(
+        await desktopAPI?.updateDiscordRPC?.(
             title,
             details,
             state,
@@ -66,22 +45,28 @@
             smallImageText,
         );
     }
+
     async function clearPresence() {
-        await pyAPI?.clearDiscordRPC?.();
+        await desktopAPI?.clearDiscordRPC?.();
+    }
+
+    async function reconnectPresence() {
+        await desktopAPI?.connectDiscordRPC?.();
+        await checkConnected();
     }
 
     async function loadPresets() {
         presetError = "";
 
-        if (!pyAPI) {
+        if (!desktopAPI) {
             presetError = "Backend API is not ready yet. Try restarting the app.";
             presets = [];
             return;
         }
 
         try {
-            const presetData = await pyAPI?.loadPresets?.();
-            presets = Object.values((presetData?.presets ?? {}) as Record<string, Preset>);
+            const presetData = await desktopAPI?.loadPresets?.();
+            presets = Object.values(presetData?.presets ?? {});
         } catch (error) {
             presetError = "Failed to load presets: " + getErrorMessage(error);
             presets = [];
@@ -97,7 +82,7 @@
         }
 
         try {
-            await pyAPI?.savePreset?.(
+            await desktopAPI?.savePreset?.(
                 title,
                 details,
                 state,
@@ -112,7 +97,7 @@
         }
     }
 
-    function usePreset(preset: Preset) {
+    function usePreset(preset) {
         title = preset.title;
         details = preset.details;
         state = preset.state;
@@ -122,26 +107,23 @@
         smallImageText = preset.smallImageText;
     }
 
-    function openEditPreset(preset: Preset) {
+    function openEditPreset(preset) {
         selectedPresetForEdit = preset;
-    } function closeEditPreset() {
+    }
+
+    function closeEditPreset() {
         selectedPresetForEdit = null;
-    } function openDeletePreset(title: string) {
+    }
+
+    function openDeletePreset(title) {
         selectedPresetForDelete = title;
-    } function closeDeletePreset() {
+    }
+
+    function closeDeletePreset() {
         selectedPresetForDelete = null;
     }
 
-    async function saveEditedPreset(event: CustomEvent<{
-        oldTitle: string;
-        title: string;
-        details: string;
-        state: string;
-        largeImage: string;
-        smallImage: string;
-        largeImageText: string;
-        smallImageText: string;
-    }>) {
+    async function saveEditedPreset(event) {
         const preset = event.detail;
         presetError = "";
 
@@ -151,7 +133,7 @@
         }
 
         try {
-            await pyAPI?.editPreset?.(
+            await desktopAPI?.editPreset?.(
                 preset.oldTitle,
                 preset.title,
                 preset.details,
@@ -177,11 +159,11 @@
         }
     }
 
-    async function deletePreset(event: CustomEvent<{ title: string }>) {
+    async function deletePreset(event) {
         presetError = "";
 
         try {
-            await pyAPI?.deletePreset?.(event.detail.title);
+            await desktopAPI?.deletePreset?.(event.detail.title);
             closeDeletePreset();
             await loadPresets();
         } catch (error) {
@@ -189,18 +171,22 @@
         }
     }
 
-    let isConnected: boolean = false;
     async function checkConnected() {
-        isConnected = await pyAPI?.checkConnected?.();
-        connectionError = (await pyAPI?.getDiscordRPCError?.()) ?? "";
+        isConnected = (await desktopAPI?.checkConnected?.()) ?? false;
+        connectionError = (await desktopAPI?.getDiscordRPCError?.()) ?? "";
     }
 
     onMount(async () => {
-        pyAPI = await getPyAPI();
-        await pyAPI?.connectDiscordRPC?.();
+        desktopAPI = await getDesktopAPI();
         await checkConnected();
-        setInterval(checkConnected, 5000);
+        connectionTimer = setInterval(checkConnected, 5000);
         await loadPresets();
+    });
+
+    onDestroy(() => {
+        if (connectionTimer !== null) {
+            clearInterval(connectionTimer);
+        }
     });
 </script>
 
@@ -223,11 +209,11 @@
         </section>
 
         <section class="s4">
-            <button on:click={pyAPI?.connectDiscordRPC?.()} class="button secondary">Reconnect</button>
+            <ConnectionDropdown status={isConnected}/>
             <button on:click={clearPresence} class="button secondary">Clear</button>
             <button on:click={savePresence} class="button">Save</button>
             <button on:click={updatePresence} class="button">Update</button>
-            {#if connectionError}
+            {#if !isConnected && connectionError}
                 <span class="errorText">{connectionError}</span>
             {/if}
             {#if presetError}

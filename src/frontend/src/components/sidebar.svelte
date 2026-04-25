@@ -1,6 +1,8 @@
-<script lang="ts">
+<script>
     import { onMount } from "svelte";
-    export let currentPage: string;
+    import { getDesktopAPI } from "../lib/getDesktopAPI.js";
+
+    export let currentPage;
 
     import gameSVG from "/public/icon/game.svg?raw";
     import profileSVG from "/public/icon/profile.svg?raw";
@@ -33,30 +35,15 @@
       },
     ];
     
-    const getPyAPI = () =>
-        new Promise<any>((resolve) => {
-            if (window.pywebview?.api) {
-                resolve(window.pywebview.api);
-                return;
-            }
-
-            const handleReady = () => {
-                window.removeEventListener("pywebviewready", handleReady);
-                resolve(window.pywebview?.api);
-            };
-
-            window.addEventListener("pywebviewready", handleReady);
-        });
-
     onMount(async () => {
-        const pyAPI = await getPyAPI();
-        const result = await pyAPI?.getVer?.();
-        const osResult = await pyAPI?.getOS?.();
-        version = result ?? "pywebview missing";
+        const desktopAPI = await getDesktopAPI();
+        const result = await desktopAPI?.getVer?.();
+        const osResult = await desktopAPI?.getOS?.();
+        version = result ?? "desktop bridge missing";
         os = osResult ?? "unknown";
     });
 
-    const selectPage = (page: string) => {
+    const selectPage = (page) => {
         currentPage = page;
     };
 </script>

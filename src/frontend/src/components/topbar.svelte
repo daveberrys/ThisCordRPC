@@ -1,34 +1,21 @@
-<script lang="ts">
+<script>
     import minimizeSvg from "/public/topbar/minimize.svg?raw";
     import exitSvg from "/public/topbar/exit.svg?raw";
     import { onMount } from "svelte";
+    import { getDesktopAPI } from "../lib/getDesktopAPI.js";
     
-    let pyAPI: any = null;
-    const getPyAPI = () =>
-        new Promise<any>((resolve) => {
-            if (window.pywebview?.api) {
-                resolve(window.pywebview.api);
-                return;
-            }
-
-            const handleReady = () => {
-                window.removeEventListener("pywebviewready", handleReady);
-                resolve(window.pywebview?.api);
-            };
-
-            window.addEventListener("pywebviewready", handleReady);
-        });
+    let desktopAPI = null;
     
     function exitApp() {
-        pyAPI?.exitApp?.();
+        desktopAPI?.exitApp?.();
     }
     
     function minimizeApp() {
-        pyAPI?.minimizeApp?.();
+        desktopAPI?.minimizeApp?.();
     }
     
     onMount(async () => {
-        pyAPI = await getPyAPI();
+        desktopAPI = await getDesktopAPI();
     });
 </script>
 

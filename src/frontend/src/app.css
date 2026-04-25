@@ -54,3 +54,13 @@ a {
     box-shadow: none;
     font-family: gg-sans;
 }
+
+.pywebview-drag-region {
+    -webkit-app-region: drag;
+}
+
+button,
+input,
+a {
+    -webkit-app-region: no-drag;
+}

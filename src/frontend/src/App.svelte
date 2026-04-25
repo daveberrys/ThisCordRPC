@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import Sidebar from './components/sidebar.svelte';
   import Topbar from './components/topbar.svelte';
 

@@ -1,13 +1,10 @@
-<script lang="ts">
+<script>
     import { createEventDispatcher } from "svelte";
     import { fade, scale } from "svelte/transition";
 
-    export let title: string;
+    export let title;
 
-    const dispatch = createEventDispatcher<{
-        close: void;
-        delete: { title: string };
-    }>();
+    const dispatch = createEventDispatcher();
 
     function closePopup() {
         dispatch("close");
@@ -17,14 +14,14 @@
         dispatch("delete", { title });
     }
 
-    function handleOverlayKeydown(event: KeyboardEvent) {
+    function handleOverlayKeydown(event) {
         if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             closePopup();
         }
     }
 
-    function stopDialogKeydown(event: KeyboardEvent) {
+    function stopDialogKeydown(event) {
         event.stopPropagation();
     }
 </script>

@@ -1,11 +1,11 @@
-<script lang="ts">
-    export let title: string;
-    export let details: string;
-    export let state: string;
-    export let bigImage: string;
-    export let smallImage: string;
-    export let bigImageText: string;
-    export let smallImageText: string;
+<script>
+    export let title;
+    export let details;
+    export let state;
+    export let bigImage;
+    export let smallImage;
+    export let bigImageText;
+    export let smallImageText;
 </script>
 
 <div class="displayRPC">

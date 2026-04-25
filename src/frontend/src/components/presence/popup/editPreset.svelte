@@ -1,32 +1,10 @@
-<script lang="ts">
+<script>
     import { createEventDispatcher } from "svelte";
     import { fade, scale } from "svelte/transition";
 
-    type Preset = {
-        title: string;
-        details: string;
-        state: string;
-        largeImage: string;
-        smallImage: string;
-        largeImageText: string;
-        smallImageText: string;
-    };
+    export let preset;
 
-    export let preset: Preset;
-
-    const dispatch = createEventDispatcher<{
-        close: void;
-        save: {
-            oldTitle: string;
-            title: string;
-            details: string;
-            state: string;
-            largeImage: string;
-            smallImage: string;
-            largeImageText: string;
-            smallImageText: string;
-        };
-    }>();
+    const dispatch = createEventDispatcher();
 
     let title = "";
     let details = "";
@@ -50,14 +28,14 @@
         dispatch("close");
     }
 
-    function handleOverlayKeydown(event: KeyboardEvent) {
+    function handleOverlayKeydown(event) {
         if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             closePopup();
         }
     }
 
-    function stopDialogKeydown(event: KeyboardEvent) {
+    function stopDialogKeydown(event) {
         event.stopPropagation();
     }
 
