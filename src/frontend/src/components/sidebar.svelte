@@ -5,6 +5,7 @@
     import gameSVG from "/public/icon/game.svg?raw";
     import profileSVG from "/public/icon/profile.svg?raw";
     import settingsSVG from "/public/icon/settings.svg?raw";
+    import editSVG from "/public/icon/edit.svg?raw";
 
     let version = "";
     let os = "";
@@ -19,6 +20,11 @@
         "name": "Profile",
         "icon": profileSVG,
         "page": "profile",
+      },
+      {
+        "name": "Status",
+        "icon": editSVG,
+        "page": "status",
       },
       {
         "name": "Settings",

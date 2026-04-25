@@ -96,11 +96,11 @@ def compileApp():
     dataArg = f"{frontendDir / 'dist'}{separator}src/frontend/dist"
     iconArg = f"{'icon'}{separator}icon"
     if sys.platform == "win32":
-        pyinstallerIcon = "icon/512.ico"
+        pyinstallerIcon = "icon/favicon.ico"
     elif sys.platform == "darwin":
-        pyinstallerIcon = "icon/512.icns"
+        pyinstallerIcon = "icon/favicon.icns"
     else:
-        pyinstallerIcon = "icon/512.png"
+        pyinstallerIcon = "icon/favicon.png"
 
     pyinstallerArgs = [
         sys.executable,

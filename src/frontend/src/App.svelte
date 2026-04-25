@@ -5,6 +5,7 @@
   import Presence from './pages/presence.svelte';
   import Settings from './pages/settings.svelte';
   import Profile from './pages/profile.svelte';
+  import Status from './pages/status.svelte';
 
   let currentPage = 'presence';
 </script>
@@ -23,6 +24,8 @@
                 <Settings />
             {:else if currentPage === "profile"}
                 <Profile />
+            {:else if currentPage === "status"}
+                <Status />
             {/if}
         </div>
     </div>

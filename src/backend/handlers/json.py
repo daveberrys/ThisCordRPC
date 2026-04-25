@@ -5,7 +5,7 @@ class JSON:
     def __init__(self, api):
         self.api = api
         self.configPath = api.getConfigPath()
-        self.presetPath = os.path.join(self.configPath, "presets.json")
+        self.presencePath = os.path.join(self.configPath, "presence.json")
 
     def _defaultJSON(self):
         return {"presets": {}}
@@ -13,20 +13,20 @@ class JSON:
     def _ensureStorage(self):
         os.makedirs(self.configPath, exist_ok=True)
 
-        if not os.path.exists(self.presetPath):
-            with open(self.presetPath, "w", encoding="utf-8") as f:
+        if not os.path.exists(self.presencePath):
+            with open(self.presencePath, "w", encoding="utf-8") as f:
                 json.dump(self._defaultJSON(), f, indent=2)
     
     def loadJSON(self):
         self._ensureStorage()
 
-        with open(self.presetPath, encoding="utf-8") as f:
+        with open(self.presencePath, encoding="utf-8") as f:
             return json.load(f)
     
     def writeJSON(self, data):
         self._ensureStorage()
 
-        with open(self.presetPath, "w", encoding="utf-8") as f:
+        with open(self.presencePath, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
         return data

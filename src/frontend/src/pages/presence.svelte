@@ -124,17 +124,11 @@
 
     function openEditPreset(preset: Preset) {
         selectedPresetForEdit = preset;
-    }
-
-    function closeEditPreset() {
+    } function closeEditPreset() {
         selectedPresetForEdit = null;
-    }
-
-    function openDeletePreset(title: string) {
+    } function openDeletePreset(title: string) {
         selectedPresetForDelete = title;
-    }
-
-    function closeDeletePreset() {
+    } function closeDeletePreset() {
         selectedPresetForDelete = null;
     }
 
@@ -229,6 +223,7 @@
         </section>
 
         <section class="s4">
+            <button on:click={pyAPI?.connectDiscordRPC?.()} class="button secondary">Reconnect</button>
             <button on:click={clearPresence} class="button secondary">Clear</button>
             <button on:click={savePresence} class="button">Save</button>
             <button on:click={updatePresence} class="button">Update</button>

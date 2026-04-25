@@ -29,7 +29,7 @@
 
 @font-face {
     font-family: gg-sans;
-    src: url('gg sans Regular.ttf');
+    src: url('/gg sans Regular.ttf');
 }
 
 body, html {
