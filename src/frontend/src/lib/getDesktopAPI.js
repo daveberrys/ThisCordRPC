@@ -1,21 +1,21 @@
 export function getDesktopAPI() {
-  return new Promise((resolve) => {
-    if (window.pywebview && window.pywebview.api) {
-      resolve(window.pywebview.api);
-      return;
-    }
+    return new Promise((resolve) => {
+        if (window.pywebview && window.pywebview.api) {
+            resolve(window.pywebview.api);
+            return;
+        }
 
-    function handleReady() {
-      window.removeEventListener("pywebviewready", handleReady);
+        function handleReady() {
+            window.removeEventListener("pywebviewready", handleReady);
 
-      if (window.pywebview && window.pywebview.api) {
-        resolve(window.pywebview.api);
-        return;
-      }
+            if (window.pywebview && window.pywebview.api) {
+                resolve(window.pywebview.api);
+                return;
+            }
 
-      resolve(null);
-    }
+            resolve(null);
+        }
 
-    window.addEventListener("pywebviewready", handleReady);
-  });
+        window.addEventListener("pywebviewready", handleReady);
+    });
 }
